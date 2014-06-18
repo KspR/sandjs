@@ -1,16 +1,14 @@
-if (typeof(window) !== 'undefined') var sand = window.sand = {};
-else var sand = global.sand = {};
+(function(name) {
+  if (typeof(window) !== 'undefined') var sand = window[name] = {};
+  else var sand = global[name] = {};
 
-(function(sand) {
-  sand.env = typeof(window) === 'undefined' ? 'node' : 'browser';
-
-  Array.prototype.last = String.prototype.last = function() {
-    return this[this.length - 1];
+  var last = function(array) {
+    return array[array.length - 1];
   };
 
-  Array.prototype.each = function(f) {
-    for (var i = -1, n = this.length; ++i < n; ) f(this[i], i);
-    return this;
+  var each = function(array, f) {
+    for (var i = -1, n = array.length; ++i < n; ) f(array[i], i);
+    return array;
   };
 
   var keys = function(o) {
@@ -25,7 +23,7 @@ else var sand = global.sand = {};
     this._grains = {};
     this.exports = {};
     this.name = name;
-    this.innerName = name.split('/').last();
+    this.innerName = last(name.split('/'));
     this.requires = requires;
     this.fn = fn;
     if (options) for (var i in options) this[i] = options[i];
@@ -62,7 +60,7 @@ else var sand = global.sand = {};
     if (sand.grains[name]) {
       return sand.grains[name];
     }
-    if (name.last() === '*') { // folder
+    if (last(name) === '*') { // folder
       var lvl = name.split('/').length,
         subFolders = {},
         l = name.length - 2,
@@ -100,7 +98,7 @@ else var sand = global.sand = {};
     
     //--- parsing the requires
     var requires,
-      fn = args.last();
+      fn = last(args);
     if (typeof(fn) !== 'function') {
       requires = args;
       fn = null;
@@ -111,22 +109,11 @@ else var sand = global.sand = {};
     //---
     
     var app = new Grain('require-' + ++id);
-    requires.each(function(require) {
+    each(requires, function(require) {
       var split = require.split('->'); // little repetition here for performance reasons
       sand.getGrain(split[0]).use(app, app, null, split[1] || null);
     });
     if (fn) return (fn(app.exports));
   };
-    
-  sand.define('sand', function() {
-    return sand;
-  });
   
-  sand.global = function(name, value) {
-    if (sand.env === 'node') {
-      return global[name] = value;
-    }
-    window[name] = value;
-  };
-  
-})(sand);
+})('sand');
