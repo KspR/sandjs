@@ -61,7 +61,7 @@ This will log 'Kenny McKormick', 'Eric Cartman', 'Randy Marsh', then '3'.
 ### About
 
 ####  Who uses sandjs ?
-* [Whibo](http://whibo.com) (collaborative real-time whiteboard)
+* [wallDraft](http://walldraft.com) (collaborative real-time whiteboard)
 
 #### Authors 
 * [Sam Ton That](https://github.com/KspR)
